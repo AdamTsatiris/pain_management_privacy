@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-neutral-50 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-50;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-primary-500 text-white hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-500;
+  }
+
+  .btn-secondary {
+    @apply bg-neutral-200 text-neutral-800 hover:bg-neutral-300 dark:bg-neutral-700 dark:text-neutral-100 dark:hover:bg-neutral-600;
+  }
+
+  .card {
+    @apply bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6;
+  }
+
+  .input {
+    @apply px-3 py-2 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-md;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400;
+  }
+}
+
+/* Custom slider styling */
+input[type='range'] {
+  @apply w-full h-2 rounded-lg appearance-none cursor-pointer bg-neutral-200 dark:bg-neutral-700;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  @apply appearance-none w-6 h-6 rounded-full bg-primary-500 dark:bg-primary-400;
+}
+
+input[type='range']::-moz-range-thumb {
+  @apply w-6 h-6 rounded-full bg-primary-500 dark:bg-primary-400 border-none;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.rotate-in {
+  animation: rotateIn 0.5s ease-out;
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotate(-10deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0);
+    opacity: 1;
+  }
+}
+
+/* Canvas container */
+.canvas-container {
+  @apply w-full h-full;
+  touch-action: none;
+}
+
+/* Tooltip */
+.tooltip {
+  @apply invisible absolute z-10 py-1 px-2 bg-neutral-800 text-white text-sm rounded opacity-0 transition-opacity duration-300;
+}
+
+.tooltip-trigger:hover .tooltip {
+  @apply visible opacity-100;
+}
