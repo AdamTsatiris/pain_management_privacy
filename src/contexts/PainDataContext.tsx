@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BodyRegion, PainData } from '../models/types';
+import { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } from '../utils/localStorageUtils';
 
 interface PainDataContextType {
   painData: PainData[];
@@ -15,16 +16,14 @@ const PainDataContext = createContext<PainDataContextType | undefined>(undefined
 
 export const PainDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [painData, setPainData] = useState<PainData[]>(() => {
-    const savedData = localStorage.getItem('painrelief-data');
-    return savedData ? JSON.parse(savedData) : [];
+    return getLocalStorageItem('painrelief-data', []);
   });
   
   const [selectedRegion, setSelectedRegion] = useState<BodyRegion | null>(null);
   const [painIntensity, setPainIntensity] = useState<number>(5);
 
   useEffect(() => {
-    // Save pain data to localStorage whenever it changes
-    localStorage.setItem('painrelief-data', JSON.stringify(painData));
+    setLocalStorageItem('painrelief-data', painData);
   }, [painData]);
 
   const selectRegion = (region: BodyRegion | null) => {
@@ -35,7 +34,7 @@ export const PainDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (!selectedRegion) return;
     
     const newEntry: PainData = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       region: selectedRegion,
       intensity: painIntensity,
       timestamp: new Date().toISOString(),
@@ -48,7 +47,9 @@ export const PainDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const clearPainData = () => {
     setPainData([]);
-    localStorage.removeItem('painrelief-data');
+    removeLocalStorageItem('painrelief-data');
+    setSelectedRegion(null);
+    setPainIntensity(5);
   };
 
   return (
