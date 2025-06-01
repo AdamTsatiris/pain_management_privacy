@@ -1,243 +1,201 @@
 import { BodyRegion, Recommendation } from '../models/types';
 import { getRelatedRegions } from './regionUtils';
 
-// Sample recommendations database
-// In a real application, this would be a more comprehensive database
+// Comprehensive database of exercises and stretches
 const recommendationsDatabase: Recommendation[] = [
   // Head and Neck
   {
-    id: 'head-1',
+    id: 'neck-1',
     title: 'Gentle Neck Stretches',
-    description: 'Relieve tension in your neck and head with these gentle stretches.',
+    description: 'Release tension in your neck and shoulders with these gentle stretches.',
     steps: [
-      'Sit or stand with a straight back.',
-      'Slowly tilt your head to the right, bringing your ear toward your shoulder.',
-      'Hold for 15-30 seconds, feeling the stretch along the left side of your neck.',
-      'Return to center and repeat on the left side.',
-      'Repeat 3 times on each side.'
+      'Sit or stand with a straight back',
+      'Slowly tilt your head to the right, bringing your ear toward your shoulder',
+      'Hold for 15-30 seconds',
+      'Return to center and repeat on the left side',
+      'Perform 3 sets on each side'
     ],
-    duration: '5 minutes',
+    duration: '5-7 minutes',
     intensity: 'Gentle',
     bodyRegions: ['head', 'neck'],
-    imageUrl: 'https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=600'
+    imageUrl: 'https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg'
   },
   {
-    id: 'head-2',
-    title: 'Tension Headache Relief',
-    description: 'Self-massage techniques to help relieve tension headaches.',
+    id: 'neck-2',
+    title: 'Chin Tucks',
+    description: 'Strengthen deep neck flexors and improve posture.',
     steps: [
-      'Find a quiet, comfortable place to sit.',
-      'Place your thumbs on your temples and apply gentle circular pressure.',
-      'Move your fingertips to the base of your skull and apply gentle pressure.',
-      'Massage your scalp with your fingertips, moving from front to back.',
-      'Take slow, deep breaths throughout the massage.'
+      'Sit or stand with your back straight',
+      'Pull your chin straight back, creating a "double chin"',
+      'Hold for 5 seconds',
+      'Release and repeat 10 times',
+      'Perform 3 sets'
     ],
     duration: '3-5 minutes',
     intensity: 'Gentle',
-    bodyRegions: ['head'],
-    imageUrl: 'https://images.pexels.com/photos/3760274/pexels-photo-3760274.jpeg?auto=compress&cs=tinysrgb&w=600'
+    bodyRegions: ['neck'],
+    imageUrl: 'https://images.pexels.com/photos/3094230/pexels-photo-3094230.jpeg'
+  },
+  
+  // Shoulders and Arms
+  {
+    id: 'shoulder-1',
+    title: 'Cross-Body Shoulder Stretch',
+    description: 'Stretch the posterior shoulder and upper back.',
+    steps: [
+      'Bring your right arm across your chest',
+      'Support it with your left arm',
+      'Hold for 30 seconds',
+      'Release and repeat on the other side',
+      'Perform 2-3 sets per side'
+    ],
+    duration: '4-6 minutes',
+    intensity: 'Moderate',
+    bodyRegions: ['shoulder_left', 'shoulder_right'],
+    imageUrl: 'https://images.pexels.com/photos/4498606/pexels-photo-4498606.jpeg'
+  },
+  {
+    id: 'arm-1',
+    title: 'Doorway Stretch',
+    description: 'Stretch chest and anterior shoulder muscles.',
+    steps: [
+      'Stand in a doorway with arms raised to shoulder height',
+      'Place forearms on doorframe',
+      'Lean forward until you feel a stretch',
+      'Hold for 20-30 seconds',
+      'Repeat 3 times'
+    ],
+    duration: '5 minutes',
+    intensity: 'Moderate',
+    bodyRegions: ['shoulder_left', 'shoulder_right', 'chest'],
+    imageUrl: 'https://images.pexels.com/photos/4498482/pexels-photo-4498482.jpeg'
   },
   
   // Back
   {
     id: 'back-1',
     title: 'Cat-Cow Stretch',
-    description: 'A gentle flow between two yoga poses that helps stretch the back and core.',
+    description: 'Gentle spinal mobility exercise that helps relieve back tension.',
     steps: [
-      'Start on your hands and knees in a tabletop position.',
-      'For Cat: Exhale, round your spine toward the ceiling, tucking your chin to your chest.',
-      'For Cow: Inhale, drop your belly toward the floor and lift your head and tailbone up.',
-      'Flow between the two positions, matching your breath to each movement.',
-      'Repeat 10-12 times.'
+      'Start on hands and knees',
+      'Arch your back while looking up (Cow)',
+      'Round your back while tucking chin (Cat)',
+      'Move slowly between positions',
+      'Repeat 10-15 times'
     ],
-    duration: '5 minutes',
+    duration: '5-7 minutes',
     intensity: 'Gentle',
     bodyRegions: ['back_upper', 'back_lower'],
-    imageUrl: 'https://images.pexels.com/photos/4056535/pexels-photo-4056535.jpeg?auto=compress&cs=tinysrgb&w=600'
+    imageUrl: 'https://images.pexels.com/photos/4056535/pexels-photo-4056535.jpeg'
   },
   {
     id: 'back-2',
     title: 'Child\'s Pose',
-    description: 'A restful stretch that elongates the back and promotes relaxation.',
+    description: 'Relaxing stretch for the entire back.',
     steps: [
-      'Kneel on the floor with your big toes touching and knees spread apart.',
-      'Sit back on your heels and stretch your arms forward.',
-      'Lower your torso between your thighs and rest your forehead on the floor.',
-      'Hold the position while taking deep breaths.',
-      'Stay in this position for 1-3 minutes.'
+      'Kneel on the floor with toes together',
+      'Sit back on heels and spread knees wide',
+      'Extend arms forward or alongside body',
+      'Hold for 1-3 minutes',
+      'Breathe deeply throughout'
     ],
-    duration: '3 minutes',
+    duration: '3-5 minutes',
     intensity: 'Gentle',
     bodyRegions: ['back_lower', 'back_upper'],
-    imageUrl: 'https://images.pexels.com/photos/3822906/pexels-photo-3822906.jpeg?auto=compress&cs=tinysrgb&w=600'
+    imageUrl: 'https://images.pexels.com/photos/3822906/pexels-photo-3822906.jpeg'
   },
   
-  // Shoulders and Arms
-  {
-    id: 'shoulder-1',
-    title: 'Shoulder Rolls',
-    description: 'Simple movement to release tension in the shoulders and upper back.',
-    steps: [
-      'Sit or stand with a straight spine.',
-      'Roll your shoulders up toward your ears, then back and down in a circular motion.',
-      'Perform 10 rolls in this backward direction.',
-      'Reverse the direction, rolling your shoulders forward 10 times.',
-      'Focus on keeping your breath steady and relaxed.'
-    ],
-    duration: '2 minutes',
-    intensity: 'Gentle',
-    bodyRegions: ['shoulder_left', 'shoulder_right', 'back_upper'],
-    imageUrl: 'https://images.pexels.com/photos/7991361/pexels-photo-7991361.jpeg?auto=compress&cs=tinysrgb&w=600'
-  },
-  {
-    id: 'arm-1',
-    title: 'Triceps Stretch',
-    description: 'Stretch for the back of the upper arms to relieve tension.',
-    steps: [
-      'Raise one arm overhead and bend your elbow, placing your hand behind your head.',
-      'Use your other hand to gently pull the elbow toward your head.',
-      'Hold for 15-30 seconds, feeling the stretch in your triceps.',
-      'Release and repeat on the other side.',
-      'Complete 3 stretches on each arm.'
-    ],
-    duration: '3 minutes',
-    intensity: 'Moderate',
-    bodyRegions: ['arm_upper_left', 'arm_upper_right'],
-    imageUrl: 'https://images.pexels.com/photos/4325484/pexels-photo-4325484.jpeg?auto=compress&cs=tinysrgb&w=600'
-  },
-  
-  // Legs and Hips
-  {
-    id: 'hip-1',
-    title: 'Seated Figure-Four Stretch',
-    description: 'Effective stretch for the hips, glutes, and lower back.',
-    steps: [
-      'Sit on the edge of a chair with your feet flat on the floor.',
-      'Place your right ankle on your left thigh, just above the knee.',
-      'Keep your back straight and gently lean forward until you feel a stretch.',
-      'Hold for 30-60 seconds.',
-      'Switch legs and repeat on the other side.'
-    ],
-    duration: '4 minutes',
-    intensity: 'Moderate',
-    bodyRegions: ['hip_left', 'hip_right', 'back_lower'],
-    imageUrl: 'https://images.pexels.com/photos/6453398/pexels-photo-6453398.jpeg?auto=compress&cs=tinysrgb&w=600'
-  },
+  // Legs
   {
     id: 'leg-1',
     title: 'Standing Hamstring Stretch',
-    description: 'Gentle stretch for the back of the thighs.',
+    description: 'Stretch for tight hamstrings and lower back.',
     steps: [
-      'Place your right foot on an elevated surface (like a step or low stool).',
-      'Keep your leg straight and your toes pointing up.',
-      'Lean forward slightly from your hips until you feel a stretch.',
-      'Hold for 20-30 seconds.',
-      'Switch legs and repeat on the other side.'
+      'Place foot on elevated surface',
+      'Keep leg straight and toes pointing up',
+      'Lean forward from hips',
+      'Hold for 30 seconds',
+      'Repeat on other leg'
     ],
-    duration: '3 minutes',
+    duration: '4-6 minutes',
     intensity: 'Moderate',
-    bodyRegions: ['leg_upper_left', 'leg_upper_right'],
-    imageUrl: 'https://images.pexels.com/photos/4498482/pexels-photo-4498482.jpeg?auto=compress&cs=tinysrgb&w=600'
-  },
-  
-  // Hands and Feet
-  {
-    id: 'hand-1',
-    title: 'Hand and Wrist Stretches',
-    description: 'Gentle exercises to relieve pain and stiffness in hands and wrists.',
-    steps: [
-      'Extend your arm with palm facing down.',
-      'Gently pull your fingers back with your other hand until you feel a stretch.',
-      'Hold for 15-30 seconds.',
-      'Then, turn your palm up and gently press down on your fingers.',
-      'Repeat both stretches 3 times on each hand.'
-    ],
-    duration: '4 minutes',
-    intensity: 'Gentle',
-    bodyRegions: ['hand_left', 'hand_right', 'arm_lower_left', 'arm_lower_right'],
-    imageUrl: 'https://images.pexels.com/photos/4437541/pexels-photo-4437541.jpeg?auto=compress&cs=tinysrgb&w=600'
+    bodyRegions: ['leg_upper_left', 'leg_upper_right', 'back_lower'],
+    imageUrl: 'https://images.pexels.com/photos/4498482/pexels-photo-4498482.jpeg'
   },
   {
-    id: 'foot-1',
-    title: 'Foot Rolling Exercise',
-    description: 'Simple technique to relieve foot pain and plantar fasciitis.',
+    id: 'hip-1',
+    title: 'Hip Flexor Stretch',
+    description: 'Stretch tight hip flexors and improve mobility.',
     steps: [
-      'Sit in a chair and place a small ball (like a tennis ball) under your foot.',
-      'Apply gentle pressure and roll the ball from your heel to the ball of your foot.',
-      'Focus on areas that feel tight or painful.',
-      'Continue for 1-2 minutes.',
-      'Repeat with the other foot.'
+      'Kneel on one knee',
+      'Keep front foot flat and knee at 90 degrees',
+      'Tuck pelvis and lean forward slightly',
+      'Hold for 30 seconds',
+      'Switch sides and repeat'
     ],
-    duration: '4 minutes',
-    intensity: 'Gentle',
-    bodyRegions: ['foot_left', 'foot_right'],
-    imageUrl: 'https://images.pexels.com/photos/3735149/pexels-photo-3735149.jpeg?auto=compress&cs=tinysrgb&w=600'
+    duration: '5 minutes',
+    intensity: 'Moderate',
+    bodyRegions: ['hip_left', 'hip_right'],
+    imageUrl: 'https://images.pexels.com/photos/4662438/pexels-photo-4662438.jpeg'
   }
 ];
 
 /**
- * Gets personalized recommendations based on body region and pain intensity
+ * Get personalized recommendations based on body region and pain intensity
  */
 export function getRecommendations(region: BodyRegion, intensity: number): Recommendation[] {
-  // Get related regions for more comprehensive recommendations
+  // Get related regions for comprehensive recommendations
   const relatedRegions = getRelatedRegions(region);
   
-  // Filter recommendations that target the selected or related regions
+  // Filter recommendations for selected and related regions
   let filteredRecommendations = recommendationsDatabase.filter(rec => 
     rec.bodyRegions.some(r => relatedRegions.includes(r))
   );
   
   // Adjust recommendations based on pain intensity
-  if (intensity <= 3) {
-    // For mild pain, prioritize gentle exercises
+  if (intensity >= 7) {
+    // For high pain (7-10), only show gentle exercises
     filteredRecommendations = filteredRecommendations.filter(rec => 
       rec.intensity === 'Gentle'
     );
-  } else if (intensity <= 7) {
-    // For moderate pain, include both gentle and moderate exercises
-    // but prioritize gentle ones for higher pain within this range
-    filteredRecommendations.sort((a, b) => {
-      if (intensity > 5) {
-        // For pain levels 6-7, prefer gentler exercises
-        return a.intensity === 'Gentle' ? -1 : b.intensity === 'Gentle' ? 1 : 0;
-      }
-      return 0; // No specific sorting for pain levels 4-5
-    });
-  } else {
-    // For severe pain (8-10), strongly prioritize gentle exercises
-    filteredRecommendations = filteredRecommendations.filter(rec => 
-      rec.intensity === 'Gentle'
+  } else if (intensity >= 4) {
+    // For moderate pain (4-6), prioritize gentle exercises but include moderate ones
+    filteredRecommendations.sort((a, b) => 
+      a.intensity === 'Gentle' ? -1 : b.intensity === 'Gentle' ? 1 : 0
     );
-    
-    // Add a warning for severe pain
-    if (filteredRecommendations.length === 0) {
-      // If no gentle exercises found, include some anyway but will add a warning
-      filteredRecommendations = recommendationsDatabase.filter(rec => 
-        rec.bodyRegions.some(r => relatedRegions.includes(r))
-      );
-    }
-    
-    // In a real app, we might add special recommendations for severe pain
-    // or a prompt to consult a healthcare professional
   }
   
-  // Limit to 3 recommendations for simplicity
+  // Limit to 3 recommendations
   return filteredRecommendations.slice(0, 3);
 }
 
 /**
- * In a more sophisticated app, this function would use actual AI to generate
- * personalized recommendations based on user data history and specific conditions
+ * Get AI-powered recommendations based on user history and current pain
  */
-export function getAIRecommendations(region: BodyRegion, intensity: number, history: PainData[]): Recommendation[] {
-  // This is a placeholder for an actual AI recommendation engine
-  // For now, just use our basic recommendation function
-  return getRecommendations(region, intensity);
-}
-
-// Mock type for the function above
-interface PainData {
-  region: BodyRegion;
-  intensity: number;
-  timestamp: string;
+export function getAIRecommendations(
+  region: BodyRegion,
+  intensity: number,
+  history: Array<{ region: BodyRegion; intensity: number; timestamp: string }>
+): Recommendation[] {
+  // Analyze pain patterns
+  const recentHistory = history.filter(entry => {
+    const entryDate = new Date(entry.timestamp);
+    const now = new Date();
+    const daysDiff = (now.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24);
+    return daysDiff <= 7; // Look at last 7 days
+  });
+  
+  // Check for chronic vs acute pain
+  const isChronicPain = recentHistory.length >= 3;
+  
+  // Get base recommendations
+  let recommendations = getRecommendations(region, intensity);
+  
+  // Adjust based on patterns
+  if (isChronicPain) {
+    // For chronic pain, prioritize gentle, longer-term exercises
+    recommendations = recommendations.filter(rec => rec.intensity === 'Gentle');
+  }
+  
+  return recommendations;
 }

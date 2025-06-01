@@ -1,49 +1,66 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { Activity, Clock, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import { usePainData } from '../../contexts/PainDataContext';
 import { getRecommendations } from '../../utils/recommendationEngine';
 import { Recommendation } from '../../models/types';
-import { Clock, Activity, ChevronDown, ChevronUp } from 'lucide-react';
 
 const RecommendationPanel: React.FC = () => {
   const { selectedRegion, painIntensity } = usePainData();
-  const [expandedId, setExpandedId] = React.useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   
   const recommendations = useMemo(() => {
     if (!selectedRegion) return [];
     return getRecommendations(selectedRegion, painIntensity);
   }, [selectedRegion, painIntensity]);
   
-  if (!selectedRegion || recommendations.length === 0) {
+  if (!selectedRegion) {
     return (
       <div className="card mb-6">
-        <h2 className="text-xl font-semibold mb-4">Recommendations</h2>
+        <h2 className="text-xl font-semibold mb-4">Exercise Recommendations</h2>
         <p className="text-neutral-600 dark:text-neutral-400">
-          {!selectedRegion 
-            ? "Select a body region to see personalized recommendations" 
-            : "No recommendations available for this selection"}
+          Select a body region to see personalized recommendations
         </p>
       </div>
     );
   }
   
-  const toggleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-  
   return (
     <div className="card mb-6 fade-in">
-      <h2 className="text-xl font-semibold mb-4">Recommendations</h2>
-      <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
-        These recommendations are generated locally based on your selection and are not medical advice.
-      </p>
+      <h2 className="text-xl font-semibold mb-4">Exercise Recommendations</h2>
       
+      {/* Medical Disclaimer */}
+      <div className="bg-alert-50 dark:bg-alert-900/20 border border-alert-200 dark:border-alert-800 rounded-lg p-4 mb-6">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="text-alert-500 shrink-0 mt-1" size={20} />
+          <div>
+            <p className="text-sm text-alert-800 dark:text-alert-200 mb-2">
+              These recommendations are generated based on your input and are not medical advice.
+            </p>
+            <p className="text-sm text-alert-700 dark:text-alert-300">
+              Please consult a healthcare professional for persistent or severe pain.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Pain Level Warning for High Intensity */}
+      {painIntensity >= 7 && (
+        <div className="bg-alert-50 dark:bg-alert-900/20 border border-alert-200 dark:border-alert-800 rounded-lg p-4 mb-6">
+          <p className="text-sm text-alert-800 dark:text-alert-200">
+            Due to your high pain level, only gentle exercises are recommended.
+            Consider consulting a healthcare professional.
+          </p>
+        </div>
+      )}
+      
+      {/* Recommendations */}
       <div className="space-y-4">
-        {recommendations.map((recommendation: Recommendation) => (
-          <RecommendationCard 
+        {recommendations.map((recommendation) => (
+          <RecommendationCard
             key={recommendation.id}
             recommendation={recommendation}
             isExpanded={expandedId === recommendation.id}
-            onToggle={() => toggleExpand(recommendation.id)}
+            onToggle={() => setExpandedId(expandedId === recommendation.id ? null : recommendation.id)}
           />
         ))}
       </div>
@@ -57,8 +74,8 @@ interface RecommendationCardProps {
   onToggle: () => void;
 }
 
-const RecommendationCard: React.FC<RecommendationCardProps> = ({ 
-  recommendation, 
+const RecommendationCard: React.FC<RecommendationCardProps> = ({
+  recommendation,
   isExpanded,
   onToggle
 }) => {
@@ -75,8 +92,8 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
   
   return (
     <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden">
-      <div 
-        className="flex justify-between items-center p-4 cursor-pointer bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-750"
+      <button
+        className="w-full flex justify-between items-center p-4 text-left bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-750"
         onClick={onToggle}
       >
         <div className="flex items-center gap-3">
@@ -93,15 +110,15 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
           </span>
           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </div>
-      </div>
+      </button>
       
       {isExpanded && (
-        <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+        <div className="p-4 border-t border-neutral-200 dark:border-neutral-700">
           {imageUrl && (
-            <img 
-              src={imageUrl} 
-              alt={title} 
-              className="w-full h-48 object-cover rounded-md mb-4" 
+            <img
+              src={imageUrl}
+              alt={title}
+              className="w-full h-48 object-cover rounded-lg mb-4"
             />
           )}
           
@@ -109,14 +126,28 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
             {description}
           </p>
           
-          <h4 className="font-medium mb-2">Steps:</h4>
-          <ol className="list-decimal ml-5 space-y-2">
-            {steps.map((step, index) => (
-              <li key={index} className="text-neutral-700 dark:text-neutral-300">
-                {step}
-              </li>
-            ))}
-          </ol>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium mb-2">Steps:</h4>
+              <ol className="list-decimal ml-5 space-y-2">
+                {steps.map((step, index) => (
+                  <li key={index} className="text-neutral-700 dark:text-neutral-300">
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </div>
+            
+            <div className="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400">
+              <div>
+                <span className="font-medium">Duration:</span> {duration}
+              </div>
+              <div>
+                <span className="font-medium">Intensity:</span>{' '}
+                <span className={intensityColor}>{intensity}</span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
