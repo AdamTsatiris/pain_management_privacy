@@ -102,9 +102,31 @@ export interface UserSettings {
   accessibilityMode: boolean;
   preferredDifficulty: DifficultyLevel;
   equipment: Equipment[];
+  highContrast: boolean;
+  fontSize: 'normal' | 'large' | 'x-large';
+  reduceMotion: boolean;
+  language: string;
+  screenReaderOptimized: boolean;
 }
 
 // Color mapping for body regions by pain intensity
 export interface RegionColorMap {
   [key: string]: string;
+}
+
+// Accessibility preferences
+export interface AccessibilityPreferences {
+  highContrast: boolean;
+  fontSize: 'normal' | 'large' | 'x-large';
+  reduceMotion: boolean;
+  screenReaderOptimized: boolean;
+}
+
+// Tutorial step interface
+export interface TutorialStep {
+  id: string;
+  title: string;
+  description: string;
+  image?: string;
+  action?: string;
 }
