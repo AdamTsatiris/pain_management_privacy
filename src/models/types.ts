@@ -84,6 +84,9 @@ export interface Exercise {
   stopIndicators: string[];
   imageUrl?: string;
   videoUrl?: string;
+  timeOfDay?: 'morning' | 'afternoon' | 'evening' | 'any';
+  weatherSensitive?: boolean;
+  weatherConditions?: string[];
 }
 
 // Pain data structure
@@ -93,6 +96,19 @@ export interface PainData {
   intensity: number;
   type: PainType;
   timestamp: string;
+  notes?: string;
+  weather?: {
+    temperature: number;
+    humidity: number;
+    pressure: number;
+    condition: string;
+  };
+  effectiveness?: number;
+  triggers?: string[];
+  stressLevel?: number;
+  sleepQuality?: number;
+  activityLevel?: number;
+  hydrationLevel?: number;
 }
 
 // User settings
@@ -107,11 +123,18 @@ export interface UserSettings {
   reduceMotion: boolean;
   language: string;
   screenReaderOptimized: boolean;
-}
-
-// Color mapping for body regions by pain intensity
-export interface RegionColorMap {
-  [key: string]: string;
+  reminderPreferences: {
+    morning: boolean;
+    afternoon: boolean;
+    evening: boolean;
+    frequency: number;
+  };
+  routinePreferences: {
+    maxDuration: number;
+    preferredTime: string[];
+    excludedExercises: string[];
+    adaptations: string[];
+  };
 }
 
 // Accessibility preferences
@@ -129,4 +152,47 @@ export interface TutorialStep {
   description: string;
   image?: string;
   action?: string;
+}
+
+// Wellness tracking
+export interface WellnessData {
+  timestamp: string;
+  stressLevel: number;
+  sleepQuality: number;
+  activityLevel: number;
+  hydrationLevel: number;
+  mood: 'excellent' | 'good' | 'fair' | 'poor';
+  notes?: string;
+}
+
+// Exercise routine
+export interface ExerciseRoutine {
+  id: string;
+  name: string;
+  description: string;
+  exercises: Exercise[];
+  duration: number;
+  difficulty: DifficultyLevel;
+  targetRegions: BodyRegion[];
+  schedule: {
+    daysOfWeek: number[];
+    timeOfDay: string;
+  };
+  created: string;
+  modified: string;
+}
+
+// Progress tracking
+export interface ProgressData {
+  routineId: string;
+  timestamp: string;
+  completed: boolean;
+  exercises: {
+    exerciseId: string;
+    completed: boolean;
+    difficulty: number;
+    notes?: string;
+  }[];
+  overallRating: number;
+  painLevelChange: number;
 }
