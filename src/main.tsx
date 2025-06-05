@@ -6,8 +6,15 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { PainDataProvider } from './contexts/PainDataContext';
 import { AccessibilityProvider } from './contexts/AccessibilityContext';
 
+console.log('Initializing application...');
+
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('Failed to find the root element');
+if (!rootElement) {
+  console.error('Failed to find root element');
+  throw new Error('Failed to find the root element');
+}
+
+console.log('Root element found, creating React root...');
 
 createRoot(rootElement).render(
   <StrictMode>
@@ -20,3 +27,5 @@ createRoot(rootElement).render(
     </ThemeProvider>
   </StrictMode>
 );
+
+console.log('Application rendered');
