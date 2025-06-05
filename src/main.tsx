@@ -4,13 +4,19 @@ import App from './App';
 import './index.css';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { PainDataProvider } from './contexts/PainDataContext';
+import { AccessibilityProvider } from './contexts/AccessibilityContext';
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Failed to find the root element');
+
+createRoot(rootElement).render(
   <StrictMode>
     <ThemeProvider>
-      <PainDataProvider>
-        <App />
-      </PainDataProvider>
+      <AccessibilityProvider>
+        <PainDataProvider>
+          <App />
+        </PainDataProvider>
+      </AccessibilityProvider>
     </ThemeProvider>
   </StrictMode>
 );
