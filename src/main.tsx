@@ -2,9 +2,6 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { PainDataProvider } from './contexts/PainDataContext';
-import { AccessibilityProvider } from './contexts/AccessibilityContext';
 
 console.log('Initializing application...');
 
@@ -18,13 +15,7 @@ console.log('Root element found, creating React root...');
 
 createRoot(rootElement).render(
   <StrictMode>
-    <ThemeProvider>
-      <AccessibilityProvider>
-        <PainDataProvider>
-          <App />
-        </PainDataProvider>
-      </AccessibilityProvider>
-    </ThemeProvider>
+    <App />
   </StrictMode>
 );
 
