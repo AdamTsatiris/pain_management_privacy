@@ -23,8 +23,10 @@ export function getRegionDisplayName(region: BodyRegion): string {
     hip_right: 'Right Hip',
     leg_upper_left: 'Left Thigh',
     leg_upper_right: 'Right Thigh',
-    leg_lower_left: 'Left Lower Leg',
-    leg_lower_right: 'Right Lower Leg',
+    knee_left: 'Left Knee',
+    knee_right: 'Right Knee',
+    leg_lower_left: 'Left Calf',
+    leg_lower_right: 'Right Calf',
     foot_left: 'Left Foot',
     foot_right: 'Right Foot'
   };
@@ -61,10 +63,12 @@ export function getRelatedRegions(region: BodyRegion): BodyRegion[] {
     // Lower limbs
     hip_left: ['hip_left', 'back_lower', 'leg_upper_left'],
     hip_right: ['hip_right', 'back_lower', 'leg_upper_right'],
-    leg_upper_left: ['leg_upper_left', 'hip_left', 'leg_lower_left'],
-    leg_upper_right: ['leg_upper_right', 'hip_right', 'leg_lower_right'],
-    leg_lower_left: ['leg_lower_left', 'leg_upper_left', 'foot_left'],
-    leg_lower_right: ['leg_lower_right', 'leg_upper_right', 'foot_right'],
+    leg_upper_left: ['leg_upper_left', 'hip_left', 'knee_left', 'leg_lower_left'],
+    leg_upper_right: ['leg_upper_right', 'hip_right', 'knee_right', 'leg_lower_right'],
+    knee_left: ['knee_left', 'leg_upper_left', 'leg_lower_left'],
+    knee_right: ['knee_right', 'leg_upper_right', 'leg_lower_right'],
+    leg_lower_left: ['leg_lower_left', 'knee_left', 'leg_upper_left', 'foot_left'],
+    leg_lower_right: ['leg_lower_right', 'knee_right', 'leg_upper_right', 'foot_right'],
     foot_left: ['foot_left', 'leg_lower_left'],
     foot_right: ['foot_right', 'leg_lower_right']
   };

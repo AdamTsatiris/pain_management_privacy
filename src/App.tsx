@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Activity, Shield, HelpCircle, Settings } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Activity, Shield, HelpCircle, Settings, AlertTriangle } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import BodyModelViewer from './components/BodyModel/BodyModelViewer';
@@ -9,6 +9,7 @@ import ExerciseSession from './components/UI/ExerciseSession';
 import PrivacyNotice from './components/UI/PrivacyNotice';
 import HelpOverlay from './components/UI/HelpOverlay';
 import SettingsPanel from './components/UI/SettingsPanel';
+import MedicalDisclaimerModal from './components/UI/MedicalDisclaimerModal';
 import { PainDataProvider } from './contexts/PainDataContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AccessibilityProvider } from './contexts/AccessibilityContext';
@@ -18,12 +19,38 @@ function App() {
   const [showHelp, setShowHelp] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showExerciseSession, setShowExerciseSession] = useState(false);
+  const [showMedicalDisclaimer, setShowMedicalDisclaimer] = useState(false);
+
+  // Check if user has seen medical disclaimer
+  useEffect(() => {
+    const hasSeenDisclaimer = localStorage.getItem('painrelief-medical-disclaimer-accepted');
+    if (!hasSeenDisclaimer) {
+      setShowMedicalDisclaimer(true);
+    }
+  }, []);
+
+  const handleAcceptDisclaimer = () => {
+    localStorage.setItem('painrelief-medical-disclaimer-accepted', 'true');
+    setShowMedicalDisclaimer(false);
+  };
 
   return (
     <ThemeProvider>
       <AccessibilityProvider>
         <PainDataProvider>
           <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800">
+            {/* Medical Disclaimer Header - Always Visible */}
+            <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 px-4 py-2">
+              <div className="container mx-auto">
+                <div className="flex items-start gap-3 text-sm">
+                  <AlertTriangle className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" size={16} />
+                  <div className="text-amber-800 dark:text-amber-200">
+                    <strong>MEDICAL DISCLAIMER:</strong> This app is for informational purposes only and is NOT a substitute for professional medical advice, diagnosis, or treatment. Always consult your doctor or healthcare provider for persistent pain or before starting any exercise program.
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Header */}
             <header className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700 sticky top-0 z-40">
               <div className="container mx-auto px-4 py-4">
@@ -77,7 +104,7 @@ function App() {
             
             {/* Main Content */}
             <main className="container mx-auto px-4 py-6">
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 h-[calc(100vh-140px)]">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 h-[calc(100vh-200px)]">
                 {/* 3D Model Container - 60% width on large screens */}
                 <div className="lg:col-span-3 bg-white/60 dark:bg-neutral-800/60 backdrop-blur-sm rounded-2xl shadow-lg border border-neutral-200/50 dark:border-neutral-700/50 overflow-hidden">
                   <div className="h-full relative">
@@ -107,6 +134,10 @@ function App() {
             </main>
             
             {/* Modals and Overlays */}
+            {showMedicalDisclaimer && (
+              <MedicalDisclaimerModal onAccept={handleAcceptDisclaimer} />
+            )}
+            
             {showPrivacyNotice && (
               <PrivacyNotice onClose={() => setShowPrivacyNotice(false)} />
             )}

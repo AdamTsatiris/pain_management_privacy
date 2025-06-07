@@ -1,4 +1,4 @@
-// Body region definitions
+// Body region definitions - Enhanced with more specific regions
 export type BodyRegion = 
   | 'head'
   | 'neck'
@@ -18,6 +18,8 @@ export type BodyRegion =
   | 'hip_right'
   | 'leg_upper_left'
   | 'leg_upper_right'
+  | 'knee_left'
+  | 'knee_right'
   | 'leg_lower_left'
   | 'leg_lower_right'
   | 'foot_left'
