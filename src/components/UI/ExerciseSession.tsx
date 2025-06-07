@@ -93,7 +93,7 @@ const ExerciseSession: React.FC<ExerciseSessionProps> = ({ onClose }) => {
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 max-w-md w-full">
           <div className="text-center">
-            <AlertTriangle className="mx-auto mb-4 text-yellow-500" size={48} />
+            <AlertTriangle className="mx-auto mb-4 text-yellow-500\" size={48} />
             <h2 className="text-xl font-semibold mb-2">No Exercises Available</h2>
             <p className="text-neutral-600 dark:text-neutral-400 mb-4">
               Please select a body region first to get personalized exercise recommendations.

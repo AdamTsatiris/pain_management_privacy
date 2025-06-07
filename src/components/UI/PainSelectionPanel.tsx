@@ -32,7 +32,7 @@ const PainSelectionPanel: React.FC<PainSelectionPanelProps> = ({ onStartSession 
       <div className="bg-white/60 dark:bg-neutral-800/60 backdrop-blur-sm rounded-2xl p-6 border border-neutral-200/50 dark:border-neutral-700/50">
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Sliders className="text-blue-600 dark:text-blue-400" size={24} />
+            <Sliders className="text-blue-600 dark:text-blue-400\" size={24} />
           </div>
           <h2 className="text-xl font-semibold mb-2 text-neutral-900 dark:text-neutral-50">
             Select a Body Region
