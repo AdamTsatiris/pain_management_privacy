@@ -1,312 +1,372 @@
-import { 
-  BodyRegion, 
-  Exercise, 
-  PainType,
-  DifficultyLevel,
-  ExerciseCategory,
-  ExerciseSubcategory,
-  Equipment
-} from '../models/types';
-import { getRelatedRegions } from './regionUtils';
+import { BodyRegion } from '../models/types';
 
-// Comprehensive database of exercises and stretches
-const exerciseDatabase: Exercise[] = [
+export interface Recommendation {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  difficulty: 'Gentle' | 'Moderate' | 'Intense';
+  category: 'Stretch' | 'Mobility' | 'Strength' | 'Relaxation';
+  steps: string[];
+  imageUrl?: string;
+  targetRegions: BodyRegion[];
+  equipment: string[];
+  safetyNotes: string[];
+}
+
+// Comprehensive exercise database
+const exerciseDatabase: Recommendation[] = [
   // HEAD AND NECK EXERCISES
   {
-    id: 'neck-stretch-1',
+    id: 'neck-stretch-basic',
     title: 'Gentle Neck Stretches',
-    description: 'A series of gentle stretches to relieve neck tension and improve mobility.',
-    category: 'stretch',
-    subcategory: 'static_stretch',
-    difficulty: 'beginner',
-    painTypes: ['tension', 'chronic'],
-    equipment: ['none'],
+    description: 'Simple neck stretches to relieve tension and improve mobility in the neck and upper shoulders.',
     duration: '5-7 minutes',
-    targetRegions: {
-      primary: ['neck'],
-      secondary: ['shoulder_left', 'shoulder_right', 'back_upper']
-    },
-    instructions: {
-      preparation: [
-        'Sit or stand with a straight back',
-        'Relax your shoulders',
-        'Keep your chin level'
-      ],
-      execution: [
-        'Slowly tilt your head to the right, bringing your ear toward your shoulder',
-        'Hold for 15-30 seconds',
-        'Return to center and repeat on the left side',
-        'Perform 3 sets on each side'
-      ],
-      breathing: [
-        'Breathe deeply and slowly throughout the stretch',
-        'Exhale as you move into the stretch',
-        'Maintain steady breathing while holding'
-      ],
-      modifications: [
-        'Can be performed seated for better stability',
-        'Use hand for gentle assistance if needed',
-        'Reduce range of motion if experiencing discomfort'
-      ]
-    },
-    commonMistakes: [
-      'Lifting shoulders during stretch',
-      'Moving too quickly',
-      'Forcing the stretch beyond comfort',
-      'Holding breath'
+    difficulty: 'Gentle',
+    category: 'Stretch',
+    targetRegions: ['neck', 'head', 'shoulder_left', 'shoulder_right'],
+    equipment: ['None'],
+    steps: [
+      'Sit or stand with your back straight and shoulders relaxed',
+      'Slowly tilt your head to the right, bringing your ear toward your shoulder',
+      'Hold for 15-30 seconds, feeling a gentle stretch on the left side',
+      'Return to center and repeat on the left side',
+      'Perform 3 sets on each side'
     ],
     safetyNotes: [
+      'Move slowly and avoid sudden movements',
       'Stop if you feel sharp or shooting pain',
-      'Avoid bouncing movements',
-      'Keep movements slow and controlled'
-    ],
-    stopIndicators: [
-      'Sharp or shooting pain',
-      'Numbness or tingling',
-      'Dizziness or headache',
-      'Increased pain or discomfort'
+      'Never force the stretch beyond comfort'
     ],
     imageUrl: 'https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg'
   },
-  
-  // SHOULDER EXERCISES
   {
-    id: 'shoulder-mobility-1',
-    title: 'Shoulder Blade Squeezes',
-    description: 'Improve posture and relieve upper back tension with controlled shoulder blade movements.',
-    category: 'mobility',
-    subcategory: 'postural_correction',
-    difficulty: 'beginner',
-    painTypes: ['tension', 'chronic'],
-    equipment: ['none', 'chair'],
+    id: 'neck-rotation',
+    title: 'Neck Rotations',
+    description: 'Gentle circular movements to improve neck mobility and reduce stiffness.',
     duration: '3-5 minutes',
-    targetRegions: {
-      primary: ['shoulder_left', 'shoulder_right', 'back_upper'],
-      secondary: ['neck']
-    },
-    instructions: {
-      preparation: [
-        'Sit or stand with good posture',
-        'Arms relaxed at sides',
-        'Shoulders level'
-      ],
-      execution: [
-        'Squeeze shoulder blades together gently',
-        'Hold for 5-10 seconds',
-        'Release slowly',
-        'Repeat 10 times'
-      ],
-      breathing: [
-        'Inhale as you prepare',
-        'Exhale as you squeeze',
-        'Breathe normally while holding'
-      ],
-      modifications: [
-        'Can be performed seated against a backrest',
-        'Vary hold duration based on comfort',
-        'Adjust squeeze intensity as needed'
-      ]
-    },
-    commonMistakes: [
-      'Lifting shoulders toward ears',
-      'Holding breath',
-      'Moving too quickly',
-      'Excessive force'
+    difficulty: 'Gentle',
+    category: 'Mobility',
+    targetRegions: ['neck', 'head'],
+    equipment: ['None'],
+    steps: [
+      'Sit comfortably with your spine straight',
+      'Slowly lower your chin toward your chest',
+      'Gently rotate your head to the right in a half-circle motion',
+      'Return to center and repeat to the left',
+      'Perform 5 rotations in each direction'
     ],
     safetyNotes: [
-      'Maintain neutral spine position',
-      'Keep movements gentle and controlled',
-      'Stop if pain increases'
+      'Avoid full circular motions that extend the neck backward',
+      'Keep movements slow and controlled',
+      'Stop if you experience dizziness'
+    ]
+  },
+
+  // SHOULDER EXERCISES
+  {
+    id: 'shoulder-blade-squeeze',
+    title: 'Shoulder Blade Squeezes',
+    description: 'Strengthen the muscles between your shoulder blades and improve posture.',
+    duration: '3-5 minutes',
+    difficulty: 'Gentle',
+    category: 'Strength',
+    targetRegions: ['shoulder_left', 'shoulder_right', 'back_upper'],
+    equipment: ['None'],
+    steps: [
+      'Sit or stand with your arms at your sides',
+      'Squeeze your shoulder blades together as if trying to hold a pencil between them',
+      'Hold for 5-10 seconds',
+      'Release slowly and repeat',
+      'Perform 10-15 repetitions'
     ],
-    stopIndicators: [
-      'Increased shoulder or neck pain',
-      'Muscle spasms',
-      'Tingling in arms or hands'
+    safetyNotes: [
+      'Keep your shoulders down, away from your ears',
+      'Maintain normal breathing throughout',
+      'Start with shorter holds if needed'
     ],
     imageUrl: 'https://images.pexels.com/photos/4498606/pexels-photo-4498606.jpeg'
   },
-  
-  // BACK EXERCISES
   {
-    id: 'back-mobility-1',
-    title: 'Cat-Cow Stretch',
-    description: 'Gentle spinal mobility exercise to improve flexibility and reduce back tension.',
-    category: 'mobility',
-    subcategory: 'range_of_motion',
-    difficulty: 'beginner',
-    painTypes: ['tension', 'chronic'],
-    equipment: ['yoga_mat'],
-    duration: '5-7 minutes',
-    targetRegions: {
-      primary: ['back_upper', 'back_lower'],
-      secondary: ['neck', 'abdomen']
-    },
-    instructions: {
-      preparation: [
-        'Start on hands and knees',
-        'Hands shoulder-width apart',
-        'Knees hip-width apart',
-        'Neutral spine position'
-      ],
-      execution: [
-        'Inhale: Drop belly, lift chest and tailbone (Cow)',
-        'Exhale: Round spine, tuck chin and tailbone (Cat)',
-        'Move slowly between positions',
-        'Repeat 10-15 times'
-      ],
-      breathing: [
-        'Inhale deeply during cow pose',
-        'Exhale fully during cat pose',
-        'Coordinate breath with movement'
-      ],
-      modifications: [
-        'Perform seated in chair for limited mobility',
-        'Reduce range of motion if needed',
-        'Use pillows under knees for comfort'
-      ]
-    },
-    commonMistakes: [
-      'Moving too quickly',
-      'Not coordinating breath with movement',
-      'Collapsing shoulders',
-      'Forcing range of motion'
+    id: 'arm-circles',
+    title: 'Gentle Arm Circles',
+    description: 'Improve shoulder mobility and warm up the shoulder joints.',
+    duration: '2-3 minutes',
+    difficulty: 'Gentle',
+    category: 'Mobility',
+    targetRegions: ['shoulder_left', 'shoulder_right', 'arm_upper_left', 'arm_upper_right'],
+    equipment: ['None'],
+    steps: [
+      'Stand with your feet shoulder-width apart',
+      'Extend your arms out to the sides at shoulder height',
+      'Make small circles forward for 10 repetitions',
+      'Reverse direction and make small circles backward for 10 repetitions',
+      'Gradually increase circle size if comfortable'
     ],
     safetyNotes: [
-      'Keep movements slow and controlled',
-      'Maintain stable shoulder and hip position',
-      'Stop if sharp pain occurs'
+      'Start with small circles and increase size gradually',
+      'Stop if you feel pain or discomfort',
+      'Keep movements controlled and smooth'
+    ]
+  },
+
+  // BACK EXERCISES
+  {
+    id: 'cat-cow-stretch',
+    title: 'Cat-Cow Stretch',
+    description: 'Gentle spinal mobility exercise to improve flexibility and reduce back tension.',
+    duration: '5-7 minutes',
+    difficulty: 'Gentle',
+    category: 'Mobility',
+    targetRegions: ['back_upper', 'back_lower', 'neck'],
+    equipment: ['Yoga mat or soft surface'],
+    steps: [
+      'Start on your hands and knees with wrists under shoulders and knees under hips',
+      'Inhale and arch your back, lifting your chest and tailbone (Cow pose)',
+      'Exhale and round your spine, tucking your chin and tailbone (Cat pose)',
+      'Move slowly between the two positions',
+      'Repeat 10-15 times, coordinating with your breath'
     ],
-    stopIndicators: [
-      'Sharp or shooting pain',
-      'Increased discomfort',
-      'Loss of balance',
-      'Dizziness'
+    safetyNotes: [
+      'Move slowly and avoid forcing the range of motion',
+      'Keep your shoulders stable throughout the movement',
+      'Stop if you experience sharp pain'
     ],
     imageUrl: 'https://images.pexels.com/photos/4056535/pexels-photo-4056535.jpeg'
+  },
+  {
+    id: 'knee-to-chest',
+    title: 'Knee to Chest Stretch',
+    description: 'Gentle lower back stretch that helps relieve tension and improve flexibility.',
+    duration: '5-8 minutes',
+    difficulty: 'Gentle',
+    category: 'Stretch',
+    targetRegions: ['back_lower', 'hip_left', 'hip_right'],
+    equipment: ['Yoga mat or comfortable surface'],
+    steps: [
+      'Lie on your back with both knees bent and feet flat on the floor',
+      'Bring one knee toward your chest, holding behind the thigh',
+      'Hold for 20-30 seconds, feeling a gentle stretch in your lower back',
+      'Lower the leg and repeat with the other side',
+      'Perform 2-3 repetitions on each side'
+    ],
+    safetyNotes: [
+      'Keep your lower back pressed gently against the floor',
+      'Avoid pulling on your knee directly',
+      'Breathe deeply throughout the stretch'
+    ]
+  },
+
+  // ARM EXERCISES
+  {
+    id: 'wrist-circles',
+    title: 'Wrist Circles and Stretches',
+    description: 'Improve wrist mobility and relieve tension from repetitive activities.',
+    duration: '3-5 minutes',
+    difficulty: 'Gentle',
+    category: 'Mobility',
+    targetRegions: ['arm_lower_left', 'arm_lower_right', 'hand_left', 'hand_right'],
+    equipment: ['None'],
+    steps: [
+      'Extend your arms in front of you at shoulder height',
+      'Make slow circles with your wrists, 10 times in each direction',
+      'Flex your wrists up and down 10 times',
+      'Gently stretch each wrist by pulling back on your fingers',
+      'Hold each stretch for 15-20 seconds'
+    ],
+    safetyNotes: [
+      'Keep movements gentle and controlled',
+      'Stop if you feel tingling or numbness',
+      'Take breaks if you experience fatigue'
+    ]
+  },
+  {
+    id: 'tricep-stretch',
+    title: 'Gentle Tricep Stretch',
+    description: 'Stretch the back of your arms and improve shoulder flexibility.',
+    duration: '3-4 minutes',
+    difficulty: 'Gentle',
+    category: 'Stretch',
+    targetRegions: ['arm_upper_left', 'arm_upper_right', 'shoulder_left', 'shoulder_right'],
+    equipment: ['None'],
+    steps: [
+      'Raise one arm overhead and bend the elbow, reaching down your back',
+      'Use your other hand to gently pull the elbow toward your head',
+      'Hold for 20-30 seconds, feeling a stretch along the back of your arm',
+      'Switch arms and repeat',
+      'Perform 2-3 repetitions on each side'
+    ],
+    safetyNotes: [
+      'Apply gentle pressure only',
+      'Stop if you feel pain in your shoulder or elbow',
+      'Keep your spine straight throughout the stretch'
+    ]
+  },
+
+  // LEG EXERCISES
+  {
+    id: 'hamstring-stretch',
+    title: 'Seated Hamstring Stretch',
+    description: 'Gentle stretch for the back of your thighs to improve flexibility.',
+    duration: '5-7 minutes',
+    difficulty: 'Gentle',
+    category: 'Stretch',
+    targetRegions: ['leg_upper_left', 'leg_upper_right', 'back_lower'],
+    equipment: ['Chair'],
+    steps: [
+      'Sit on the edge of a chair with one leg extended straight',
+      'Keep your heel on the ground and toes pointing up',
+      'Lean forward slightly from your hips until you feel a stretch',
+      'Hold for 20-30 seconds',
+      'Switch legs and repeat'
+    ],
+    safetyNotes: [
+      'Keep your back straight while leaning forward',
+      'Stop if you feel pain behind your knee',
+      'Breathe normally throughout the stretch'
+    ]
+  },
+  {
+    id: 'calf-stretch',
+    title: 'Standing Calf Stretch',
+    description: 'Stretch your calf muscles to improve lower leg flexibility.',
+    duration: '4-6 minutes',
+    difficulty: 'Gentle',
+    category: 'Stretch',
+    targetRegions: ['leg_lower_left', 'leg_lower_right', 'foot_left', 'foot_right'],
+    equipment: ['Wall'],
+    steps: [
+      'Stand arm\'s length from a wall',
+      'Place your hands against the wall',
+      'Step your right foot back about 2-3 feet',
+      'Keep your right heel on the ground and lean forward',
+      'Hold for 20-30 seconds, then switch legs'
+    ],
+    safetyNotes: [
+      'Keep your back leg straight and heel down',
+      'Don\'t bounce during the stretch',
+      'Adjust distance from wall as needed'
+    ]
+  },
+
+  // RELAXATION EXERCISES
+  {
+    id: 'deep-breathing',
+    title: 'Deep Breathing Exercise',
+    description: 'Relaxation technique to reduce stress and muscle tension throughout the body.',
+    duration: '5-10 minutes',
+    difficulty: 'Gentle',
+    category: 'Relaxation',
+    targetRegions: ['chest', 'abdomen', 'neck', 'back_upper'],
+    equipment: ['None'],
+    steps: [
+      'Sit or lie down in a comfortable position',
+      'Place one hand on your chest and one on your abdomen',
+      'Breathe in slowly through your nose for 4 counts',
+      'Hold your breath for 2 counts',
+      'Exhale slowly through your mouth for 6 counts',
+      'Repeat for 5-10 cycles'
+    ],
+    safetyNotes: [
+      'Don\'t force your breathing',
+      'Stop if you feel dizzy or lightheaded',
+      'Practice regularly for best results'
+    ]
+  },
+  {
+    id: 'progressive-relaxation',
+    title: 'Progressive Muscle Relaxation',
+    description: 'Systematic relaxation technique to release tension throughout your body.',
+    duration: '10-15 minutes',
+    difficulty: 'Gentle',
+    category: 'Relaxation',
+    targetRegions: ['head', 'neck', 'shoulder_left', 'shoulder_right', 'back_upper', 'back_lower'],
+    equipment: ['Comfortable surface'],
+    steps: [
+      'Lie down comfortably and close your eyes',
+      'Starting with your toes, tense each muscle group for 5 seconds',
+      'Release the tension and notice the relaxation for 10 seconds',
+      'Move progressively up your body: feet, calves, thighs, abdomen, arms, shoulders, neck, face',
+      'End by taking several deep breaths and enjoying the full-body relaxation'
+    ],
+    safetyNotes: [
+      'Don\'t tense muscles too forcefully',
+      'Skip any areas that are injured or painful',
+      'Practice in a quiet, comfortable environment'
+    ]
   }
 ];
 
 /**
- * Get personalized recommendations based on body region, pain intensity, and type
+ * Get personalized exercise recommendations based on selected body region and pain intensity
  */
-export function getRecommendations(
-  region: BodyRegion,
-  intensity: number,
-  painType: PainType = 'tension',
-  difficulty: DifficultyLevel = 'beginner',
-  availableEquipment: Equipment[] = ['none']
-): Exercise[] {
-  // Get related regions for comprehensive recommendations
-  const relatedRegions = getRelatedRegions(region);
-  
-  // Filter exercises based on multiple criteria
-  let filteredExercises = exerciseDatabase.filter(exercise => {
-    // Check if exercise targets selected or related regions
-    const targetsRegion = [
-      ...exercise.targetRegions.primary,
-      ...exercise.targetRegions.secondary
-    ].some(r => relatedRegions.includes(r));
-    
-    // Check if required equipment is available
-    const hasRequiredEquipment = exercise.equipment.some(eq => 
-      availableEquipment.includes(eq)
-    );
-    
-    // Check pain type compatibility
-    const suitableForPainType = exercise.painTypes.includes(painType);
-    
-    // Check difficulty level
-    const appropriateDifficulty = exercise.difficulty === difficulty;
-    
-    return targetsRegion && hasRequiredEquipment && suitableForPainType && appropriateDifficulty;
-  });
-  
+export function getRecommendations(region: BodyRegion, painIntensity: number): Recommendation[] {
+  // Filter exercises that target the selected region
+  let relevantExercises = exerciseDatabase.filter(exercise => 
+    exercise.targetRegions.includes(region)
+  );
+
   // Adjust recommendations based on pain intensity
-  if (intensity >= 7) {
-    // For high pain (7-10), only show gentle exercises
-    filteredExercises = filteredExercises.filter(exercise =>
-      exercise.category === 'stretch' || exercise.category === 'relaxation'
+  if (painIntensity >= 7) {
+    // High pain: Only gentle stretches and relaxation
+    relevantExercises = relevantExercises.filter(exercise => 
+      exercise.difficulty === 'Gentle' && 
+      (exercise.category === 'Stretch' || exercise.category === 'Relaxation')
     );
-  } else if (intensity >= 4) {
-    // For moderate pain (4-6), prioritize gentler exercises
-    filteredExercises.sort((a, b) => {
-      const categoryPriority = {
-        stretch: 0,
-        relaxation: 1,
-        mobility: 2,
-        strength: 3
-      };
-      return categoryPriority[a.category] - categoryPriority[b.category];
-    });
-  }
-  
-  // Ensure a mix of exercise types
-  const categorizedExercises = {
-    stretch: filteredExercises.filter(e => e.category === 'stretch'),
-    mobility: filteredExercises.filter(e => e.category === 'mobility'),
-    strength: filteredExercises.filter(e => e.category === 'strength'),
-    relaxation: filteredExercises.filter(e => e.category === 'relaxation')
-  };
-  
-  // Build final recommendation list
-  const recommendations: Exercise[] = [];
-  
-  // Always include at least one stretch
-  if (categorizedExercises.stretch.length > 0) {
-    recommendations.push(categorizedExercises.stretch[0]);
-  }
-  
-  // Add mobility or strength exercise if pain isn't severe
-  if (intensity < 7 && categorizedExercises.mobility.length > 0) {
-    recommendations.push(categorizedExercises.mobility[0]);
-  }
-  
-  // Add relaxation exercise
-  if (categorizedExercises.relaxation.length > 0) {
-    recommendations.push(categorizedExercises.relaxation[0]);
-  }
-  
-  // Fill remaining slots with other exercises
-  while (recommendations.length < 3 && filteredExercises.length > recommendations.length) {
-    const nextExercise = filteredExercises.find(e => 
-      !recommendations.includes(e)
+  } else if (painIntensity >= 4) {
+    // Moderate pain: Gentle exercises and some mobility
+    relevantExercises = relevantExercises.filter(exercise => 
+      exercise.difficulty === 'Gentle'
     );
-    if (nextExercise) {
-      recommendations.push(nextExercise);
-    } else {
-      break;
-    }
   }
-  
+
+  // Sort by category priority (Stretch > Mobility > Strength > Relaxation for pain relief)
+  const categoryPriority = { 'Stretch': 0, 'Mobility': 1, 'Strength': 2, 'Relaxation': 3 };
+  relevantExercises.sort((a, b) => categoryPriority[a.category] - categoryPriority[b.category]);
+
+  // Return top 3-5 recommendations
+  const recommendations = relevantExercises.slice(0, 5);
+
+  // If we don't have enough specific exercises, add some general relaxation exercises
+  if (recommendations.length < 3) {
+    const relaxationExercises = exerciseDatabase.filter(exercise => 
+      exercise.category === 'Relaxation' && 
+      !recommendations.includes(exercise)
+    );
+    recommendations.push(...relaxationExercises.slice(0, 3 - recommendations.length));
+  }
+
   return recommendations;
 }
 
 /**
- * Get AI-powered recommendations based on user history and current pain
+ * Get related body regions for more comprehensive recommendations
  */
-export function getAIRecommendations(
-  region: BodyRegion,
-  intensity: number,
-  history: Array<{ region: BodyRegion; intensity: number; type: PainType; timestamp: string }>,
-  userSettings: { preferredDifficulty: DifficultyLevel; equipment: Equipment[] }
-): Exercise[] {
-  // Analyze pain patterns
-  const recentHistory = history.filter(entry => {
-    const entryDate = new Date(entry.timestamp);
-    const now = new Date();
-    const daysDiff = (now.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24);
-    return daysDiff <= 7; // Look at last 7 days
-  });
-  
-  // Determine pain type based on history
-  const painType = recentHistory.length >= 3 ? 'chronic' : 'acute';
-  
-  // Get recommendations using main function
-  return getRecommendations(
-    region,
-    intensity,
-    painType,
-    userSettings.preferredDifficulty,
-    userSettings.equipment
-  );
+export function getRelatedRegions(region: BodyRegion): BodyRegion[] {
+  const relationshipMap: Record<BodyRegion, BodyRegion[]> = {
+    head: ['neck'],
+    neck: ['head', 'shoulder_left', 'shoulder_right', 'back_upper'],
+    shoulder_left: ['neck', 'arm_upper_left', 'back_upper'],
+    shoulder_right: ['neck', 'arm_upper_right', 'back_upper'],
+    arm_upper_left: ['shoulder_left', 'arm_lower_left'],
+    arm_upper_right: ['shoulder_right', 'arm_lower_right'],
+    arm_lower_left: ['arm_upper_left', 'hand_left'],
+    arm_lower_right: ['arm_upper_right', 'hand_right'],
+    hand_left: ['arm_lower_left'],
+    hand_right: ['arm_lower_right'],
+    chest: ['back_upper', 'shoulder_left', 'shoulder_right'],
+    abdomen: ['back_lower', 'chest'],
+    back_upper: ['neck', 'shoulder_left', 'shoulder_right', 'back_lower'],
+    back_lower: ['back_upper', 'hip_left', 'hip_right'],
+    hip_left: ['back_lower', 'leg_upper_left'],
+    hip_right: ['back_lower', 'leg_upper_right'],
+    leg_upper_left: ['hip_left', 'leg_lower_left'],
+    leg_upper_right: ['hip_right', 'leg_lower_right'],
+    leg_lower_left: ['leg_upper_left', 'foot_left'],
+    leg_lower_right: ['leg_upper_right', 'foot_right'],
+    foot_left: ['leg_lower_left'],
+    foot_right: ['leg_lower_right']
+  };
+
+  return [region, ...(relationshipMap[region] || [])];
 }

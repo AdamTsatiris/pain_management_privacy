@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { BodyRegion } from '../../models/types';
 import { usePainData } from '../../contexts/PainDataContext';
@@ -28,20 +27,24 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     foot: new THREE.BoxGeometry(0.08, 0.04, 0.15),
   }), []);
 
-  // Create materials
+  // Create materials with enhanced colors
   const materials = useMemo(() => {
     const baseMaterial = new THREE.MeshPhongMaterial({
-      color: 0xe0c8b0,
+      color: 0xf4c2a1,
       shininess: 30,
       specular: 0x444444,
     });
 
     const highlightMaterial = baseMaterial.clone();
-    highlightMaterial.color.set(0xf0d8c0);
+    highlightMaterial.color.set(0xffd4b3);
+    highlightMaterial.emissive.set(0x222222);
+    highlightMaterial.emissiveIntensity = 0.1;
 
     const selectedMaterial = baseMaterial.clone();
-    selectedMaterial.emissive.set(getPainColor(painIntensity));
-    selectedMaterial.emissiveIntensity = 0.5;
+    const painColor = getPainColor(painIntensity);
+    selectedMaterial.color.set(painColor);
+    selectedMaterial.emissive.set(painColor);
+    selectedMaterial.emissiveIntensity = 0.3;
 
     return { baseMaterial, highlightMaterial, selectedMaterial };
   }, [painIntensity]);
@@ -51,7 +54,10 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     event.stopPropagation();
     const mesh = event.object as THREE.Mesh;
     hoveredRef.current = mesh.name;
-    mesh.material = materials.highlightMaterial;
+    if (mesh.name !== selectedRegion) {
+      mesh.material = materials.highlightMaterial;
+    }
+    document.body.style.cursor = 'pointer';
   };
 
   const handlePointerOut = (event: THREE.Event) => {
@@ -61,6 +67,7 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     if (mesh.name !== selectedRegion) {
       mesh.material = materials.baseMaterial;
     }
+    document.body.style.cursor = 'default';
   };
 
   // Handle click selection
@@ -95,6 +102,12 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
       mesh.rotation.set(...rotation);
       mesh.castShadow = true;
       mesh.receiveShadow = true;
+      
+      // Add event listeners
+      mesh.addEventListener('pointerover', handlePointerOver);
+      mesh.addEventListener('pointerout', handlePointerOut);
+      mesh.addEventListener('click', handleClick);
+      
       group.add(mesh);
     };
 
@@ -116,6 +129,10 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     createBodyPart('hand_left', geometries.hand, [-0.45, 0.7, 0]);
     createBodyPart('hand_right', geometries.hand, [0.45, 0.7, 0]);
 
+    // Back (invisible but clickable areas)
+    createBodyPart('back_upper', new THREE.BoxGeometry(0.4, 0.4, 0.1), [0, 1.2, -0.15]);
+    createBodyPart('back_lower', new THREE.BoxGeometry(0.4, 0.4, 0.1), [0, 0.8, -0.15]);
+
     // Legs
     createBodyPart('leg_upper_left', geometries.leg, [-0.15, 0.4, 0]);
     createBodyPart('leg_upper_right', geometries.leg, [0.15, 0.4, 0]);
@@ -124,14 +141,10 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     createBodyPart('foot_left', geometries.foot, [-0.15, -0.2, 0.05]);
     createBodyPart('foot_right', geometries.foot, [0.15, -0.2, 0.05]);
 
-    // Add event listeners to all meshes
-    group.traverse((object) => {
-      if (object instanceof THREE.Mesh) {
-        object.addEventListener('pointerover', handlePointerOver);
-        object.addEventListener('pointerout', handlePointerOut);
-        object.addEventListener('click', handleClick);
-      }
-    });
+    // Hips
+    createBodyPart('hip_left', new THREE.SphereGeometry(0.08, 32, 16), [-0.15, 0.6, 0]);
+    createBodyPart('hip_right', new THREE.SphereGeometry(0.08, 32, 16), [0.15, 0.6, 0]);
+
   }, [geometries, materials]);
 
   // Update materials based on selection
@@ -152,7 +165,7 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
   // Gentle rotation animation when no region is selected
   useFrame(({ clock }) => {
     if (groupRef.current && !selectedRegion) {
-      groupRef.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.2) * 0.05;
+      groupRef.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.3) * 0.1;
     }
   });
 
