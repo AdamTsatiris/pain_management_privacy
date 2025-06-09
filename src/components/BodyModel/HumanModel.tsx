@@ -14,54 +14,84 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
   const hoveredRef = useRef<string | null>(null);
   const { painIntensity, selectRegion } = usePainData();
 
-  // Anatomically accurate geometries with proper proportions
+  // Enhanced geometries with smooth, rounded shapes
   const geometries = useMemo(() => ({
-    // Head - oval shape, not perfect sphere
-    head: new THREE.SphereGeometry(0.12, 32, 32).scale(1, 1.2, 0.9),
-    neck: new THREE.CylinderGeometry(0.06, 0.08, 0.15, 32),
+    // Head - egg-shaped with subtle facial features
+    head: new THREE.SphereGeometry(0.14, 32, 32).scale(1, 1.15, 0.95),
+    neck: new THREE.CylinderGeometry(0.07, 0.09, 0.12, 32),
     
-    // Torso - anatomically shaped
-    chest: new THREE.CylinderGeometry(0.22, 0.18, 0.35, 32).scale(1, 1, 0.7),
-    abdomen: new THREE.CylinderGeometry(0.18, 0.16, 0.25, 32).scale(1, 1, 0.8),
+    // Torso - anatomically curved
+    chest: (() => {
+      const geometry = new THREE.CylinderGeometry(0.24, 0.20, 0.32, 32);
+      geometry.scale(1, 1, 0.75);
+      return geometry;
+    })(),
+    abdomen: (() => {
+      const geometry = new THREE.CylinderGeometry(0.20, 0.18, 0.22, 32);
+      geometry.scale(1, 1, 0.8);
+      return geometry;
+    })(),
     
-    // Arms - proper proportions
-    shoulder: new THREE.SphereGeometry(0.08, 32, 16),
-    upperArm: new THREE.CylinderGeometry(0.06, 0.05, 0.28, 32),
-    forearm: new THREE.CylinderGeometry(0.05, 0.04, 0.25, 32),
-    hand: new THREE.SphereGeometry(0.04, 32, 16).scale(1, 1.2, 0.6),
+    // Arms - tapered for natural look
+    shoulder: new THREE.SphereGeometry(0.09, 32, 16),
+    upperArm: (() => {
+      const geometry = new THREE.CylinderGeometry(0.07, 0.055, 0.26, 32);
+      return geometry;
+    })(),
+    forearm: (() => {
+      const geometry = new THREE.CylinderGeometry(0.055, 0.045, 0.24, 32);
+      return geometry;
+    })(),
+    hand: (() => {
+      const geometry = new THREE.SphereGeometry(0.045, 32, 16);
+      geometry.scale(1, 1.3, 0.7);
+      return geometry;
+    })(),
     
-    // Legs - anatomically correct
-    hip: new THREE.SphereGeometry(0.07, 32, 16),
-    thigh: new THREE.CylinderGeometry(0.08, 0.06, 0.35, 32),
-    knee: new THREE.SphereGeometry(0.05, 32, 16),
-    calf: new THREE.CylinderGeometry(0.06, 0.04, 0.32, 32),
-    foot: new THREE.BoxGeometry(0.06, 0.03, 0.12),
+    // Legs - anatomically tapered
+    hip: new THREE.SphereGeometry(0.08, 32, 16),
+    thigh: (() => {
+      const geometry = new THREE.CylinderGeometry(0.09, 0.07, 0.32, 32);
+      return geometry;
+    })(),
+    knee: new THREE.SphereGeometry(0.06, 32, 16),
+    calf: (() => {
+      const geometry = new THREE.CylinderGeometry(0.07, 0.05, 0.30, 32);
+      return geometry;
+    })(),
+    foot: (() => {
+      const geometry = new THREE.BoxGeometry(0.07, 0.04, 0.14);
+      geometry.translate(0, 0, 0.03);
+      return geometry;
+    })(),
     
     // Back regions (invisible collision boxes)
-    backUpper: new THREE.BoxGeometry(0.35, 0.35, 0.08),
-    backLower: new THREE.BoxGeometry(0.32, 0.25, 0.08),
+    backUpper: new THREE.BoxGeometry(0.38, 0.32, 0.08),
+    backLower: new THREE.BoxGeometry(0.34, 0.22, 0.08),
   }), []);
 
-  // Realistic skin-tone materials
+  // Enhanced materials with soft skin tone and realistic shading
   const materials = useMemo(() => {
-    const skinColor = 0xFDBCB4; // Realistic skin tone
+    const skinColor = 0xF7DDD4; // Soft, warm skin tone
     
     const baseMaterial = new THREE.MeshPhongMaterial({
       color: skinColor,
-      shininess: 20,
-      specular: 0x333333,
+      shininess: 8,
+      specular: 0x222222,
+      transparent: true,
+      opacity: 0.98,
     });
 
     const highlightMaterial = baseMaterial.clone();
-    highlightMaterial.color.set(0xFFD4C4);
-    highlightMaterial.emissive.set(0x111111);
-    highlightMaterial.emissiveIntensity = 0.1;
+    highlightMaterial.color.set(0xFFE8DC);
+    highlightMaterial.emissive.set(0x4A90E2);
+    highlightMaterial.emissiveIntensity = 0.15;
 
     const selectedMaterial = baseMaterial.clone();
     const painColor = getPainColor(painIntensity);
     selectedMaterial.color.set(painColor);
     selectedMaterial.emissive.set(painColor);
-    selectedMaterial.emissiveIntensity = 0.4;
+    selectedMaterial.emissiveIntensity = 0.3;
 
     // Invisible material for back regions
     const invisibleMaterial = new THREE.MeshBasicMaterial({
@@ -72,7 +102,7 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     return { baseMaterial, highlightMaterial, selectedMaterial, invisibleMaterial };
   }, [painIntensity]);
 
-  // Handle hover effects
+  // Enhanced hover effects with smooth transitions
   const handlePointerOver = (event: THREE.Event) => {
     event.stopPropagation();
     const mesh = event.object as THREE.Mesh;
@@ -100,20 +130,20 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     selectRegion(mesh.name as BodyRegion);
   };
 
-  // Create anatomically accurate body with proper proportions (head = 1/8 total height)
+  // Create enhanced anatomical body with natural posture
   useEffect(() => {
     if (!groupRef.current) return;
 
     const group = groupRef.current;
-    group.position.y = -0.8; // Center the model
-    group.scale.setScalar(1.2); // Scale for better visibility
+    group.position.y = -0.6;
+    group.scale.setScalar(1.3);
 
     // Clear existing meshes
     while (group.children.length) {
       group.remove(group.children[0]);
     }
 
-    // Create body part with proper positioning and connections
+    // Create body part with enhanced positioning
     const createBodyPart = (
       name: string,
       geometry: THREE.BufferGeometry,
@@ -136,51 +166,51 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
       group.add(mesh);
     };
 
-    // HEAD AND NECK (1/8 of total height ≈ 0.2 units)
-    createBodyPart('head', geometries.head, [0, 1.55, 0]);
-    createBodyPart('neck', geometries.neck, [0, 1.35, 0]);
+    // HEAD AND NECK
+    createBodyPart('head', geometries.head, [0, 1.52, 0]);
+    createBodyPart('neck', geometries.neck, [0, 1.32, 0]);
 
-    // TORSO
-    createBodyPart('chest', geometries.chest, [0, 1.05, 0]);
-    createBodyPart('abdomen', geometries.abdomen, [0, 0.7, 0]);
+    // TORSO with natural curves
+    createBodyPart('chest', geometries.chest, [0, 1.02, 0]);
+    createBodyPart('abdomen', geometries.abdomen, [0, 0.68, 0]);
 
-    // SHOULDERS
-    createBodyPart('shoulder_left', geometries.shoulder, [-0.25, 1.2, 0]);
-    createBodyPart('shoulder_right', geometries.shoulder, [0.25, 1.2, 0]);
+    // SHOULDERS with natural positioning
+    createBodyPart('shoulder_left', geometries.shoulder, [-0.26, 1.18, 0]);
+    createBodyPart('shoulder_right', geometries.shoulder, [0.26, 1.18, 0]);
 
-    // ARMS - Left side
-    createBodyPart('arm_upper_left', geometries.upperArm, [-0.35, 0.95, 0], [0, 0, -0.1]);
-    createBodyPart('arm_lower_left', geometries.forearm, [-0.42, 0.6, 0]);
-    createBodyPart('hand_left', geometries.hand, [-0.42, 0.4, 0]);
+    // ARMS - Left side with natural pose
+    createBodyPart('arm_upper_left', geometries.upperArm, [-0.38, 0.92, 0], [0, 0, -0.15]);
+    createBodyPart('arm_lower_left', geometries.forearm, [-0.46, 0.58, 0.05], [0, 0, -0.1]);
+    createBodyPart('hand_left', geometries.hand, [-0.48, 0.36, 0.08]);
 
-    // ARMS - Right side
-    createBodyPart('arm_upper_right', geometries.upperArm, [0.35, 0.95, 0], [0, 0, 0.1]);
-    createBodyPart('arm_lower_right', geometries.forearm, [0.42, 0.6, 0]);
-    createBodyPart('hand_right', geometries.hand, [0.42, 0.4, 0]);
+    // ARMS - Right side with natural pose
+    createBodyPart('arm_upper_right', geometries.upperArm, [0.38, 0.92, 0], [0, 0, 0.15]);
+    createBodyPart('arm_lower_right', geometries.forearm, [0.46, 0.58, 0.05], [0, 0, 0.1]);
+    createBodyPart('hand_right', geometries.hand, [0.48, 0.36, 0.08]);
 
     // BACK REGIONS (invisible but clickable)
-    createBodyPart('back_upper', geometries.backUpper, [0, 1.05, -0.12], [0, 0, 0], materials.invisibleMaterial);
-    createBodyPart('back_lower', geometries.backLower, [0, 0.7, -0.12], [0, 0, 0], materials.invisibleMaterial);
+    createBodyPart('back_upper', geometries.backUpper, [0, 1.02, -0.14], [0, 0, 0], materials.invisibleMaterial);
+    createBodyPart('back_lower', geometries.backLower, [0, 0.68, -0.14], [0, 0, 0], materials.invisibleMaterial);
 
     // HIPS
-    createBodyPart('hip_left', geometries.hip, [-0.12, 0.5, 0]);
-    createBodyPart('hip_right', geometries.hip, [0.12, 0.5, 0]);
+    createBodyPart('hip_left', geometries.hip, [-0.13, 0.48, 0]);
+    createBodyPart('hip_right', geometries.hip, [0.13, 0.48, 0]);
 
     // LEGS - Left side
-    createBodyPart('leg_upper_left', geometries.thigh, [-0.12, 0.25, 0]);
-    createBodyPart('knee_left', geometries.knee, [-0.12, 0.05, 0]);
-    createBodyPart('leg_lower_left', geometries.calf, [-0.12, -0.15, 0]);
-    createBodyPart('foot_left', geometries.foot, [-0.12, -0.35, 0.03]);
+    createBodyPart('leg_upper_left', geometries.thigh, [-0.13, 0.22, 0]);
+    createBodyPart('knee_left', geometries.knee, [-0.13, 0.02, 0]);
+    createBodyPart('leg_lower_left', geometries.calf, [-0.13, -0.18, 0]);
+    createBodyPart('foot_left', geometries.foot, [-0.13, -0.36, 0.03]);
 
     // LEGS - Right side
-    createBodyPart('leg_upper_right', geometries.thigh, [0.12, 0.25, 0]);
-    createBodyPart('knee_right', geometries.knee, [0.12, 0.05, 0]);
-    createBodyPart('leg_lower_right', geometries.calf, [0.12, -0.15, 0]);
-    createBodyPart('foot_right', geometries.foot, [0.12, -0.35, 0.03]);
+    createBodyPart('leg_upper_right', geometries.thigh, [0.13, 0.22, 0]);
+    createBodyPart('knee_right', geometries.knee, [0.13, 0.02, 0]);
+    createBodyPart('leg_lower_right', geometries.calf, [0.13, -0.18, 0]);
+    createBodyPart('foot_right', geometries.foot, [0.13, -0.36, 0.03]);
 
   }, [geometries, materials]);
 
-  // Update materials based on selection
+  // Update materials based on selection with smooth transitions
   useEffect(() => {
     if (!groupRef.current) return;
 
@@ -195,10 +225,12 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     });
   }, [selectedRegion, materials]);
 
-  // Gentle rotation animation when no region is selected
+  // Gentle breathing animation when no region is selected
   useFrame(({ clock }) => {
     if (groupRef.current && !selectedRegion) {
-      groupRef.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.3) * 0.08;
+      const breathingScale = 1 + Math.sin(clock.getElapsedTime() * 0.8) * 0.02;
+      groupRef.current.scale.setScalar(1.3 * breathingScale);
+      groupRef.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.2) * 0.05;
     }
   });
 
