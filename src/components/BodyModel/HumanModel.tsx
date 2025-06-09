@@ -12,7 +12,7 @@ interface HumanModelProps {
 const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
   const groupRef = useRef<THREE.Group>(null);
   const hoveredRef = useRef<string | null>(null);
-  const { painIntensity, selectRegion } = usePainData();
+  const { painIntensity } = usePainData();
 
   // Enhanced geometries with smooth, rounded shapes
   const geometries = useMemo(() => ({
@@ -102,34 +102,6 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     return { baseMaterial, highlightMaterial, selectedMaterial, invisibleMaterial };
   }, [painIntensity]);
 
-  // Enhanced hover effects with smooth transitions
-  const handlePointerOver = (event: THREE.Event) => {
-    event.stopPropagation();
-    const mesh = event.object as THREE.Mesh;
-    hoveredRef.current = mesh.name;
-    if (mesh.name !== selectedRegion && mesh.material !== materials.invisibleMaterial) {
-      mesh.material = materials.highlightMaterial;
-    }
-    document.body.style.cursor = 'pointer';
-  };
-
-  const handlePointerOut = (event: THREE.Event) => {
-    event.stopPropagation();
-    const mesh = event.object as THREE.Mesh;
-    hoveredRef.current = null;
-    if (mesh.name !== selectedRegion && mesh.material !== materials.invisibleMaterial) {
-      mesh.material = materials.baseMaterial;
-    }
-    document.body.style.cursor = 'default';
-  };
-
-  // Handle click selection
-  const handleClick = (event: THREE.Event) => {
-    event.stopPropagation();
-    const mesh = event.object as THREE.Mesh;
-    selectRegion(mesh.name as BodyRegion);
-  };
-
   // Create enhanced anatomical body with natural posture
   useEffect(() => {
     if (!groupRef.current) return;
@@ -152,16 +124,13 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
       material: THREE.Material = materials.baseMaterial
     ) => {
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.name = name;
+      mesh.name = name; // CRITICAL: Set the name for click detection
       mesh.position.set(...position);
       mesh.rotation.set(...rotation);
       mesh.castShadow = true;
       mesh.receiveShadow = true;
       
-      // Add event listeners
-      mesh.addEventListener('pointerover', handlePointerOver);
-      mesh.addEventListener('pointerout', handlePointerOut);
-      mesh.addEventListener('click', handleClick);
+      console.log(`🏗️ Created body part: ${name} at position:`, position); // Debug log
       
       group.add(mesh);
     };
@@ -208,16 +177,21 @@ const HumanModel: React.FC<HumanModelProps> = ({ selectedRegion }) => {
     createBodyPart('leg_lower_right', geometries.calf, [0.13, -0.18, 0]);
     createBodyPart('foot_right', geometries.foot, [0.13, -0.36, 0.03]);
 
+    console.log(`✅ Created ${group.children.length} body parts`); // Debug log
+
   }, [geometries, materials]);
 
   // Update materials based on selection with smooth transitions
   useEffect(() => {
     if (!groupRef.current) return;
 
+    console.log('🎨 Updating materials for selection:', selectedRegion); // Debug log
+
     groupRef.current.traverse((object) => {
       if (object instanceof THREE.Mesh && object.material !== materials.invisibleMaterial) {
         if (object.name === selectedRegion) {
           object.material = materials.selectedMaterial;
+          console.log(`🔴 Selected material applied to: ${object.name}`); // Debug log
         } else if (object.name !== hoveredRef.current) {
           object.material = materials.baseMaterial;
         }

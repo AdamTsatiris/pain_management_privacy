@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
 import HumanModel from './HumanModel';
 import ModelLoader from './ModelLoader';
+import ClickHandler from './ClickHandler';
 import { usePainData } from '../../contexts/PainDataContext';
 
 const BodyModelViewer: React.FC = () => {
@@ -44,6 +45,9 @@ const BodyModelViewer: React.FC = () => {
           color="#1a365d"
           position={[0, -2, 0]}
         />
+        
+        {/* Click Handler - This will handle all raycasting */}
+        <ClickHandler />
         
         {/* Enhanced Human Model */}
         <Suspense fallback={<ModelLoader />}>
